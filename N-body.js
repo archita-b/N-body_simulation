@@ -1,18 +1,20 @@
-export function init(input) {
-  input.forEach((item) => {
-    item.vx = 0;
-    item.vy = 0;
-    item.ax = 0;
-    item.ay = 0;
+let particles = [];
+let dt = 0;
+const mass = 0.1;
+const G = 1;
 
-    return item;
-  });
-  return input;
+export function init(input, timeStep) {
+  particles = input.map((particle) => ({
+    ...particle,
+    vx: 0,
+    vy: 0,
+    ax: 0,
+    ay: 0,
+  }));
+  dt = timeStep;
 }
 
-function computeAcceleration(particles) {
-  const mass = 0.1;
-  const G = 1;
+function computeAcceleration() {
   const n = particles.length;
 
   for (let i = 0; i < n; i++) {
@@ -35,23 +37,21 @@ function computeAcceleration(particles) {
   }
 }
 
-function updatePositions(particles, dt) {
+function updatePositions() {
   particles.forEach((particle) => {
-    particle.vx = particle.ax * dt;
-    particle.vy = particle.ay * dt;
+    particle.vx += particle.ax * dt;
+    particle.vy += particle.ay * dt;
 
-    particle.x = particle.vx * dt;
-    particle.y = particle.vy * dt;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
   });
 }
 
-export function next(particles, dt) {
-  computeAcceleration(particles);
-  updatePositions(particles, dt);
+export function next() {
+  computeAcceleration();
+  updatePositions();
 
-  particles.forEach((p, i) => {
-    console.log(
-      `particle ${i + 1}: x = ${particles[i].x},  y = ${particles[i].y}`
-    );
+  return particles.map((p, i) => {
+    return { x: p.x.toFixed(2), y: p.y.toFixed(2) };
   });
 }
