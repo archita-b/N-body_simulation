@@ -1,6 +1,4 @@
-// const particles = [{ "x": 0 , "y":0, "vx" : 0, "vy": 0, "ax": 0, "ay": 0}];
-
-function init(input) {
+export function init(input) {
   input.forEach((item) => {
     item.vx = 0;
     item.vy = 0;
@@ -11,17 +9,10 @@ function init(input) {
   });
   return input;
 }
-// console.log(
-//   init([
-//     { x: 0, y: 1 },
-//     { x: 1, y: 0 },
-//     { x: 1, y: 1 },
-//   ])
-// );
 
-function nBody(particles, dt) {
+function computeAcceleration(particles) {
   const mass = 0.1;
-  const G = 6.6743 * 10 ** -11;
+  const G = 1;
   const n = particles.length;
 
   for (let i = 0; i < n; i++) {
@@ -41,20 +32,26 @@ function nBody(particles, dt) {
         particles[i].ay += ay;
       }
     }
-
-    particles[i].vx += particles[i].ax * dt;
-    particles[i].vy += particles[i].ay * dt;
-
-    particles[i].x += particles[i].vx * dt;
-    particles[i].y += particles[i].vy * dt;
   }
 }
 
-function next(particles, dt) {
-  nBody(particles, dt);
+function updatePositions(particles, dt) {
+  particles.forEach((particle) => {
+    particle.vx = particle.ax * dt;
+    particle.vy = particle.ay * dt;
 
-  particles.forEach((p) => {
-    console.log(`x coordinate of ${particle[i]}: ${particle[i].x}
-                 y coordinate of ${particle[i]}: ${particle[i].y}`);
+    particle.x = particle.vx * dt;
+    particle.y = particle.vy * dt;
+  });
+}
+
+export function next(particles, dt) {
+  computeAcceleration(particles);
+  updatePositions(particles, dt);
+
+  particles.forEach((p, i) => {
+    console.log(
+      `particle ${i + 1}: x = ${particles[i].x},  y = ${particles[i].y}`
+    );
   });
 }
