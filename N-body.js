@@ -1,7 +1,7 @@
 let particles = [];
 let dt = 0;
-const mass = 0.1;
-const G = 1;
+const mass = 1;
+const G = 0.5;
 
 export function init(input, timeStep) {
   particles = input.map((particle) => ({
@@ -16,6 +16,7 @@ export function init(input, timeStep) {
 
 function computeAcceleration() {
   const n = particles.length;
+  const minDistance = 20;
 
   for (let i = 0; i < n; i++) {
     particles[i].ax = 0;
@@ -23,9 +24,12 @@ function computeAcceleration() {
 
     for (let j = 0; j < n; j++) {
       if (i !== j) {
-        const dx = particles[i].x - particles[j].x;
-        const dy = particles[i].y - particles[j].y;
-        const dr = Math.sqrt(dx ** 2 + dy ** 2);
+        const dx = particles[j].x - particles[i].x;
+        const dy = particles[j].y - particles[i].y;
+        let dr = Math.sqrt(dx ** 2 + dy ** 2);
+
+        if (dr < minDistance) continue;
+
         const F = (G * mass * mass) / dr ** 2;
         const ax = (F / mass) * (dx / dr);
         const ay = (F / mass) * (dy / dr);
@@ -51,7 +55,7 @@ export function next() {
   computeAcceleration();
   updatePositions();
 
-  return particles.map((p, i) => {
-    return { x: p.x.toFixed(2), y: p.y.toFixed(2) };
+  return particles.map((p) => {
+    return { x: p.x, y: p.y };
   });
 }
