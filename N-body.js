@@ -17,37 +17,26 @@ export function init(input, timeStep) {
 function computeAcceleration() {
   const n = particles.length;
   const minDistance = 20;
-  const memo = {};
 
   for (let i = 0; i < n; i++) {
     particles[i].ax = 0;
     particles[i].ay = 0;
 
-    for (let j = 0; j < n; j++) {
-      if (i !== j) {
-        const key = `(${i},${j})`;
+    for (let j = i + 1; j < n - 1; j++) {
+      const dx = particles[j].x - particles[i].x;
+      const dy = particles[j].y - particles[i].y;
+      let dr = Math.sqrt(dx ** 2 + dy ** 2);
 
-        if (!memo[key]) {
-          const dx = particles[j].x - particles[i].x;
-          const dy = particles[j].y - particles[i].y;
-          let dr = Math.sqrt(dx ** 2 + dy ** 2);
+      if (dr < minDistance) continue;
 
-          if (dr < minDistance) {
-            memo[key] = { ax: 0, ay: 0 };
-          } else {
-            const F = (G * mass * mass) / dr ** 2;
-            const ax = (F / mass) * (dx / dr);
-            const ay = (F / mass) * (dy / dr);
+      const F = (G * mass * mass) / dr ** 2;
+      const ax = (F / mass) * (dx / dr);
+      const ay = (F / mass) * (dy / dr);
 
-            memo[key] = { ax, ay };
-          }
-        }
-        const { ax, ay } = memo[key];
-        particles[i].ax += ax;
-        particles[i].ay += ay;
-        particles[j].ax -= ax;
-        particles[j].ay -= ay;
-      }
+      particles[i].ax += ax;
+      particles[i].ay += ay;
+      particles[j].ax -= ax;
+      particles[j].ay -= ay;
     }
   }
 }
