@@ -1,9 +1,17 @@
 import { init, next } from "./N-body.js";
 
-const input = [
-  { x: -100, y: 0 },
-  { x: 100, y: 0 },
-];
+function generateParticles(numOfParticles, range) {
+  const particles = [];
+  for (let i = 0; i < numOfParticles; i++) {
+    particles.push({
+      x: Math.random() * range,
+      y: Math.random() * range,
+    });
+  }
+  return particles;
+}
+const input = generateParticles(1000, 100);
+
 const time = 5;
 const dt = 1;
 const steps = Math.floor(time / dt);
